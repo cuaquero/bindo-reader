@@ -21,7 +21,6 @@ import {
   getPdfPassword,
   getServerRegion,
   getTextRules,
-  isMobileRenderDevice,
   throttle,
 } from "../../utils/common";
 import _ from "underscore";
@@ -280,7 +279,12 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
               ? "yes"
               : "no",
           backgroundColor: ConfigService.getReaderConfig("backgroundColor"),
-          isMobile: isMobileRenderDevice() ? "yes" : "no",
+          // Deliberately hardcoded "no", not device-detected - turning this
+          // "yes" activates kookit.min.js code paths (scroll-behavior,
+          // timing, image handling) that have never been live in this fork
+          // before and broke page scrolling on a real mobile device when
+          // tried. Leave it off unless that engine behavior gets audited.
+          isMobile: "no",
           isIndent: ConfigService.getReaderConfig("isIndent"),
           isHyphenation: ConfigService.getReaderConfig("isHyphenation"),
           isStartFromEven: ConfigService.getReaderConfig("isStartFromEven"),

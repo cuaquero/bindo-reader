@@ -1,7 +1,7 @@
 import * as Kookit from "../../assets/lib/kookit.min";
 import { BookHelper } from "../../assets/lib/kookit.min";
 import { ConfigService } from "../../assets/lib/kookit-extra-browser.min";
-import { getTextRules, isMobileRenderDevice } from "../common";
+import { getTextRules } from "../common";
 import CoverUtil from "./coverUtil";
 
 export interface ExtractedBookMetadata {
@@ -64,7 +64,7 @@ export async function extractBookMetadata(
         textOrientation: ConfigService.getReaderConfig("textOrientation"),
         parserRegex: "",
         isDarkMode: "no",
-        isMobile: isMobileRenderDevice() ? "yes" : "no",
+        isMobile: "no",
         password: "",
         isScannedPDF: "no",
         isKeepPDFBackground: "no",

@@ -749,7 +749,7 @@ export const preCacheAllBooks = async (bookList: Book[]) => {
         textOrientation: ConfigService.getReaderConfig("textOrientation"),
         parserRegex: "",
         isDarkMode: "no",
-        isMobile: isMobileRenderDevice() ? "yes" : "no",
+        isMobile: "no",
         password: getPdfPassword(selectedBook),
         isScannedPDF:
           selectedBook.description.indexOf("scanned") > -1 ? "yes" : "no",
