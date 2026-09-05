@@ -20,6 +20,7 @@ import {
   getPdfPassword,
   getStorageLocation,
   getTextRules,
+  isMobileRenderDevice,
 } from "../../../utils/common";
 import { BookHelper } from "../../../assets/lib/kookit.min";
 declare var window: any;
@@ -289,7 +290,7 @@ class MoreAction extends React.Component<MoreActionProps, MoreActionState> {
                         ConfigService.getReaderConfig("textOrientation"),
                       parserRegex: "",
                       isDarkMode: "no",
-                      isMobile: "no",
+                      isMobile: isMobileRenderDevice() ? "yes" : "no",
                       password: getPdfPassword(this.props.currentBook),
                       isScannedPDF: "no",
                       isKeepPDFBackground: "no",

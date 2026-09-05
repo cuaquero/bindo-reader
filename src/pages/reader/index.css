@@ -251,3 +251,24 @@
 .reader-zoom-in-icon-container {
   font-size: 23px;
 }
+
+/* Below ~500px the 450px-wide operation/progress bars (and their
+   `calc(50vw - 225px)` centering, which goes negative under document width
+   450px) would render partly or fully off-screen and be unreachable, since
+   the app disables horizontal scroll globally - pin them full-width instead. */
+@media screen and (max-width: 500px) {
+  .operation-panel-container,
+  .progress-panel-container {
+    width: calc(100vw - 16px);
+    left: 8px;
+  }
+}
+/* The 299px nav/setting side panels fit down to ~375px but get very cramped
+   below that (e.g. 320px-wide phones) - widen them to fill most of the
+   viewport instead of a fixed px value. */
+@media screen and (max-width: 400px) {
+  .setting-panel-container,
+  .navigation-panel-container {
+    width: calc(100vw - 40px);
+  }
+}

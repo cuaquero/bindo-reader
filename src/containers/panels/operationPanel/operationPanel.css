@@ -103,3 +103,34 @@
   margin-top: 7px;
   font-size: 15px;
 }
+
+/* Same "would render off-screen below 450px" problem as the container in
+   reader/index.css, plus the three fixed 125px-wide buttons (375px total)
+   no longer fit a full-width mobile bar - let them shrink instead. */
+@media screen and (max-width: 500px) {
+  .book-operation-panel {
+    width: calc(100vw - 16px) !important;
+    left: 8px !important;
+  }
+  /* Keep the existing float:left layout (so the info text above is
+     untouched) but switch the three buttons from a fixed 125px to a
+     percentage width so they still fit side by side in the narrower bar. */
+  .exit-reading-button,
+  .add-bookmark-button,
+  .enter-fullscreen-button {
+    width: 31%;
+    margin-left: 2%;
+  }
+  .exit-reading-button {
+    margin-left: 1.5%;
+  }
+  .exit-reading-text,
+  .add-bookmark-text,
+  .enter-fullscreen-text {
+    display: none;
+  }
+  .add-bookmark-icon,
+  .enter-fullscreen-icon {
+    margin-left: 0;
+  }
+}

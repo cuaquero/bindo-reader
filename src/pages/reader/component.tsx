@@ -22,7 +22,7 @@ import SpeechDialog from "../../components/dialogs/speechDialog";
 import AnnotationDialog from "../../components/dialogs/annotationDialog";
 import PopupOptionDialog from "../../components/dialogs/popupOptionDialog";
 import { READING_PANEL_TOGGLE_EVENT } from "../../utils/reader/mouseEvent";
-import { throttle } from "../../utils/common";
+import { isMobileRenderDevice, throttle } from "../../utils/common";
 declare var window: any;
 let lock = false; //prevent from clicking too fasts
 let throttleTime = 200;
@@ -105,7 +105,13 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
       totalDuration: 0,
       currentDuration: 0,
       scale: ConfigService.getReaderConfig("scale") || "1",
-      isTouch: ConfigService.getReaderConfig("isTouch") === "yes",
+      // Default touch-friendly edge-panel behavior on for a real mobile/
+      // tablet device (the hover-reveal edge zones aren't discoverable on a
+      // touchscreen), unless the user has explicitly chosen either way.
+      isTouch:
+        ConfigService.getReaderConfig("isTouch") === "yes" ||
+        (ConfigService.getReaderConfig("isTouch") !== "no" &&
+          isMobileRenderDevice()),
       isPreventTrigger:
         ConfigService.getReaderConfig("isPreventTrigger") === "yes",
       isShowScale: false,
@@ -193,7 +199,12 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
           )) ||
         book.format.startsWith("CB")
           ? ConfigService.getReaderConfig("pdfReaderMode") || "scroll"
-          : ConfigService.getReaderConfig("readerMode") || "double";
+          : ConfigService.getReaderConfig("readerMode") ||
+            // A two-column "double" spread only makes sense once each column
+            // has enough width to be readable - default to single-column on
+            // a narrow screen instead, unless the user has already saved an
+            // explicit preference.
+            (window.innerWidth <= 768 ? "single" : "double");
       this.props.handleReaderMode(readerMode);
       this.props.handleReadingBook(book);
       // Start event-driven reading-time tracking

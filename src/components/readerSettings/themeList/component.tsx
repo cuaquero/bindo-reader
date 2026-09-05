@@ -10,7 +10,13 @@ import {
 } from "../../../assets/lib/kookit-extra-browser.min";
 import { HexColorPicker } from "react-colorful";
 import toast from "react-hot-toast";
-import { normalizePickerColor, parseColorInput } from "../../../utils/common";
+import {
+  getContrastRatio,
+  MIN_READABLE_CONTRAST,
+  normalizePickerColor,
+  parseColorInput,
+  pickReadableCounterColor,
+} from "../../../utils/common";
 
 class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
   constructor(props: ThemeListProps) {
@@ -75,13 +81,30 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
       ConfigService.getReaderConfig("backgroundColor") === "rgba(255,255,255,1)"
     ) {
       ConfigService.setReaderConfig("textColor", "rgba(0,0,0,1)");
+    } else {
+      // Any other swatch (built-in sepia/green, or a custom color from the
+      // hex picker) had no auto-pairing at all before this - the existing
+      // text color could stay black-on-black-ish with no warning. Only
+      // step in when the pairing is actually unreadable, so a deliberate,
+      // already-legible combo the user picked isn't second-guessed.
+      const currentText =
+        ConfigService.getReaderConfig("textColor") || "rgba(0,0,0,1)";
+      if (getContrastRatio(color, currentText) < MIN_READABLE_CONTRAST) {
+        ConfigService.setReaderConfig(
+          "textColor",
+          pickReadableCounterColor(color)
+        );
+        toast.success(this.props.t("Adjusted text color for readability"));
+      }
     }
     this.props.renderBookFunc();
+    const appliedTextColor =
+      ConfigService.getReaderConfig("textColor") || "rgba(0,0,0,1)";
     this.setState({
-      currentPresetIndex: this.getPresetIndex(
-        color,
-        ConfigService.getReaderConfig("textColor") || "rgba(0,0,0,1)"
-      ),
+      currentTextIndex: textList
+        .concat(ConfigService.getAllListConfig("themeColors"))
+        .indexOf(appliedTextColor),
+      currentPresetIndex: this.getPresetIndex(color, appliedTextColor),
     });
   };
 
@@ -149,17 +172,27 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
     this.setState({ isShowBgPicker });
   };
   handleChooseTextColor = (color: string) => {
+    // Symmetric to handleChangeBgColor: respect the color the user just
+    // picked, and only auto-correct the *other* side (background) if the
+    // resulting pair would actually be unreadable.
+    let backgroundColor =
+      ConfigService.getReaderConfig("backgroundColor") || "rgba(255,255,255,1)";
+    if (getContrastRatio(color, backgroundColor) < MIN_READABLE_CONTRAST) {
+      backgroundColor = pickReadableCounterColor(color);
+      ConfigService.setReaderConfig("backgroundColor", backgroundColor);
+      this.props.handleBackgroundColor(backgroundColor);
+      toast.success(this.props.t("Adjusted background color for readability"));
+    }
     this.setState({
       currentTextIndex: textList
         .concat(ConfigService.getAllListConfig("themeColors"))
         .indexOf(color),
+      currentBackgroundIndex: backgroundList
+        .concat(ConfigService.getAllListConfig("themeColors"))
+        .indexOf(backgroundColor),
       textColorInput: normalizePickerColor(color, "#000000"),
       pendingTextColor: normalizePickerColor(color, "#000000"),
-      currentPresetIndex: this.getPresetIndex(
-        ConfigService.getReaderConfig("backgroundColor") ||
-          "rgba(255,255,255,1)",
-        color
-      ),
+      currentPresetIndex: this.getPresetIndex(backgroundColor, color),
     });
     ConfigService.setReaderConfig("textColor", color);
     this.props.renderBookFunc();

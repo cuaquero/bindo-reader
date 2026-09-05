@@ -550,3 +550,71 @@
 .ai-setting-form-row .token-dialog-username-box {
   margin-top: 0;
 }
+
+/* Responsive overrides below - these must stay after every base rule they
+   touch, since a plain class selector inside @media ties in specificity
+   with the same selector outside it, and the later one in source order
+   wins regardless of which one's condition matches. */
+
+/* Below 760px the dialog itself (and its calc(50% - 380px) centering) would
+   run off-screen - shrink to fit the viewport with a small gutter. */
+@media screen and (max-width: 800px) {
+  .setting-dialog-container {
+    width: calc(100vw - 24px);
+    left: 12px;
+  }
+}
+@media screen and (max-height: 580px) {
+  .setting-dialog-container {
+    height: calc(100vh - 24px);
+    top: 12px;
+  }
+}
+/* A 180px fixed sidebar plus the remaining content no longer fits side by
+   side on a phone-width screen - stack the sidebar as a horizontally
+   scrollable tab strip above the content instead. */
+@media screen and (max-width: 640px) {
+  .setting-dialog-container {
+    flex-direction: column;
+  }
+  /* .setting-close-container is `position: absolute; top/right: 10px`
+     relative to the nearest positioned ancestor, which used to be the
+     container itself - fine when the sidebar was a narrow column beside the
+     main content, but the sidebar is now a full-width strip stacked above
+     it, so that placement would land the close button on top of the
+     sidebar's tabs instead of the main content's corner. Give main its own
+     positioning context so it resolves against the (now correctly placed)
+     content pane again. */
+  .setting-dialog-main {
+    position: relative;
+  }
+  .setting-dialog-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 40%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 8px;
+  }
+  .setting-dialog-sidebar-title {
+    display: none;
+  }
+  .setting-dialog-sidebar-group {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+  .setting-dialog-sidebar-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .setting-dialog-sidebar-divider {
+    display: none;
+  }
+  .account-login-grid {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

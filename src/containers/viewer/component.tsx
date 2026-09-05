@@ -21,6 +21,7 @@ import {
   getPdfPassword,
   getServerRegion,
   getTextRules,
+  isMobileRenderDevice,
   throttle,
 } from "../../utils/common";
 import _ from "underscore";
@@ -279,7 +280,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
               ? "yes"
               : "no",
           backgroundColor: ConfigService.getReaderConfig("backgroundColor"),
-          isMobile: "no",
+          isMobile: isMobileRenderDevice() ? "yes" : "no",
           isIndent: ConfigService.getReaderConfig("isIndent"),
           isHyphenation: ConfigService.getReaderConfig("isHyphenation"),
           isStartFromEven: ConfigService.getReaderConfig("isStartFromEven"),

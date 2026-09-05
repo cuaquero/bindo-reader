@@ -139,6 +139,16 @@ input[type="range"]::-ms-thumb {
   animation: fade-up 0.1s ease-in-out 0s 1;
 }
 
+/* Same off-screen problem as .book-operation-panel below 450px. The
+   scrubber/slider elements inside are already narrower (200-209px) so they
+   keep fitting once the bar itself is pinned full-width. */
+@media screen and (max-width: 500px) {
+  .progress-panel {
+    width: calc(100vw - 16px) !important;
+    left: 8px !important;
+  }
+}
+
 #jumpPage,
 #jumpChapter {
   width: 30px;

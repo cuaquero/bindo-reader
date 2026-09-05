@@ -1,5 +1,5 @@
 ﻿import Plugin from "../models/Plugin";
-import { isElectron } from "react-device-detect";
+import { isElectron, isMobile, isTablet } from "react-device-detect";
 import CryptoJS from "crypto-js";
 import {
   CommonTool,
@@ -592,6 +592,14 @@ export const reloadManager = () => {
     window.location.reload();
   }
 };
+// Real device detection (UA-based), for the render engine's own "isMobile"
+// option - this gates mobile-specific behavior already built into
+// kookit.min.js (animation timing, scroll behavior, script/image handling),
+// distinct from viewport-width-based responsive layout (which uses
+// window.innerWidth directly, since a resized desktop window should get the
+// same responsive CSS without pretending to be a different device).
+export const isMobileRenderDevice = () => isMobile || isTablet;
+
 export const openExternalUrl = (
   url: string,
   isPlugin: boolean = false,
@@ -741,7 +749,7 @@ export const preCacheAllBooks = async (bookList: Book[]) => {
         textOrientation: ConfigService.getReaderConfig("textOrientation"),
         parserRegex: "",
         isDarkMode: "no",
-        isMobile: "no",
+        isMobile: isMobileRenderDevice() ? "yes" : "no",
         password: getPdfPassword(selectedBook),
         isScannedPDF:
           selectedBook.description.indexOf("scanned") > -1 ? "yes" : "no",
@@ -1535,6 +1543,37 @@ export const normalizePickerColor = (
     })
     .join("")}`;
 };
+
+const relativeLuminance = (hex: string): number => {
+  const [r, g, b] = [1, 3, 5]
+    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+// WCAG contrast ratio between two colors (hex or rgba strings both accepted).
+export const getContrastRatio = (colorA: string, colorB: string): number => {
+  const lumA = relativeLuminance(normalizePickerColor(colorA, "#ffffff"));
+  const lumB = relativeLuminance(normalizePickerColor(colorB, "#000000"));
+  const lighter = Math.max(lumA, lumB);
+  const darker = Math.min(lumA, lumB);
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
+// WCAG AA for normal-sized text.
+export const MIN_READABLE_CONTRAST = 4.5;
+
+// Whichever of pure black/white contrasts best against a reference color -
+// used to auto-correct one side of a background/text color pair when the
+// user's pick would otherwise land on an unreadable combination.
+export const pickReadableCounterColor = (referenceColor: string): string => {
+  const blackContrast = getContrastRatio(referenceColor, "#000000");
+  const whiteContrast = getContrastRatio(referenceColor, "#ffffff");
+  return whiteContrast > blackContrast
+    ? "rgba(255,255,255,1)"
+    : "rgba(0,0,0,1)";
+};
+
 export const splitSentences = (text: string, maxLength?: number) => {
   const lang = detectLocalLanguage(text);
   const resolvedMaxLength = maxLength ?? (lang === "en" ? 150 : 50);
