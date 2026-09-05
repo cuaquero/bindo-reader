@@ -234,3 +234,56 @@
 .icon-idea {
   font-size: 20px;
 }
+
+/* Below this the sidebar was never actually hideable - only "collapsed" to
+   a 70px icon rail, still real layout width that a phone-width screen
+   doesn't have to spare. Below the breakpoint it's an off-canvas overlay
+   drawer instead, hidden by default and toggled by the same hamburger icon
+   (see sidebar/component.tsx's handleMenuIconClick) - independent of
+   isCollapsed, which stays a desktop-only preference. */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    max-width: 80vw;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.35);
+  }
+  .sidebar.sidebar-mobile-open {
+    transform: translateX(0);
+  }
+  .sidebar-mobile-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  .mobile-menu-toggle {
+    display: flex;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    z-index: 1001;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    background: rgba(75, 75, 75, 0.9);
+    color: #fff;
+  }
+}
+/* Only ever meaningful below the breakpoint above - keep it out of the
+   desktop layout entirely regardless of state. */
+@media screen and (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+}

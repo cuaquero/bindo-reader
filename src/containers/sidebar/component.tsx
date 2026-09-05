@@ -14,6 +14,11 @@ import {
   moveBooksToTrash,
   parseBookDragData,
 } from "../../utils/reader/bookDrag";
+
+// Must match the breakpoint in sidebar.css that switches the sidebar from
+// its normal desktop layout to a hidden-by-default overlay drawer.
+const MOBILE_SIDEBAR_BREAKPOINT = 768;
+
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
   private newShelfInput = React.createRef<HTMLInputElement>();
   constructor(props: SidebarProps) {
@@ -30,6 +35,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       isCreateShelf: false,
       newShelfName: "",
       dropTargetShelf: "",
+      isMobileMenuOpen: false,
     };
   }
   componentDidMount() {
@@ -61,13 +67,24 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     }
   }
   handleSidebar = (mode: string) => {
-    this.setState({ mode: mode });
+    this.setState({ mode: mode, isMobileMenuOpen: false });
     this.props.handleSelectBook(false);
     this.props.history.push(`/manager/${mode}`);
     this.props.handleMode(mode);
     this.props.handleShelf("");
     this.props.handleSearch(false);
     this.props.handleSortDisplay(false);
+  };
+  handleMenuIconClick = () => {
+    // On a narrow screen the sidebar is a hidden-by-default overlay drawer,
+    // not the desktop full/icon-rail toggle - same icon, different meaning,
+    // switched on actual viewport width rather than device type so a
+    // resized desktop window gets the same behavior a phone does.
+    if (window.innerWidth <= MOBILE_SIDEBAR_BREAKPOINT) {
+      this.setState((prev) => ({ isMobileMenuOpen: !prev.isMobileMenuOpen }));
+    } else {
+      this.handleCollapse(!this.state.isCollapsed);
+    }
   };
   handleHover = (mode: string) => {
     this.setState({ hoverMode: mode });
@@ -381,13 +398,33 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     };
     return (
       <>
-        <div className="sidebar">
+        {/* The drawer's own hamburger below is only reachable once the
+            drawer is already open - it lives inside .sidebar, which is
+            off-canvas by default on mobile. This persistent one sits
+            outside it so there's always a way to open the drawer; it's
+            hidden (via CSS, mobile-only) while the drawer is open so the
+            two don't visually stack. */}
+        {!this.state.isMobileMenuOpen && (
           <div
-            className="sidebar-list-icon"
-            onClick={() => {
-              this.handleCollapse(!this.state.isCollapsed);
-            }}
+            className="mobile-menu-toggle"
+            onClick={this.handleMenuIconClick}
           >
+            <span className="icon-menu sidebar-list"></span>
+          </div>
+        )}
+        {this.state.isMobileMenuOpen && (
+          <div
+            className="sidebar-mobile-backdrop"
+            onClick={() => this.setState({ isMobileMenuOpen: false })}
+          ></div>
+        )}
+        <div
+          className={
+            "sidebar" +
+            (this.state.isMobileMenuOpen ? " sidebar-mobile-open" : "")
+          }
+        >
+          <div className="sidebar-list-icon" onClick={this.handleMenuIconClick}>
             <span className="icon-menu sidebar-list"></span>
           </div>
 

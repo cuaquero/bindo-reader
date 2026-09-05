@@ -29,4 +29,9 @@ export interface SidebarState {
   isOpenDelete: boolean;
   isCreateShelf: boolean;
   dropTargetShelf: string;
+  // Separate from isCollapsed (a persisted desktop preference toggling the
+  // full sidebar vs. a narrow icon rail) - on a narrow screen the sidebar is
+  // hidden entirely by default and slides in as an overlay, independent of
+  // whatever desktop collapse preference is saved.
+  isMobileMenuOpen: boolean;
 }

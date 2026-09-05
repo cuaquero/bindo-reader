@@ -227,3 +227,42 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05) translateY(-3px);
 }
+
+/* .header's 190px margin-left exists to leave room for the sidebar, which
+   is a fixed-width in-flow column on desktop but a hidden-by-default
+   overlay drawer below this breakpoint (see sidebar.css) - so the content
+   here needs the full viewport width back, not a 190px gutter for a
+   sidebar that isn't there. !important beats the isCollapsed-driven inline
+   marginLeft style (header/component.tsx), which only knows about the
+   desktop collapsed/expanded distinction, not this one. Search box and the
+   icon row are stacked instead of side-by-side (desktop assumes ~700px+ of
+   width for one row), and .setting-icon-parrent's fixed 50px-wide floated
+   icons are switched to a wrapping flexbox so they don't overflow. */
+@media screen and (max-width: 768px) {
+  .header {
+    margin-left: 0 !important;
+    height: auto;
+    min-height: 80px;
+    overflow: visible;
+    padding-bottom: 12px;
+  }
+  .header-search-container {
+    position: absolute !important;
+    top: 16px !important;
+    /* Leave room for the persistent mobile menu toggle button
+       (sidebar.css's .mobile-menu-toggle, 44px wide starting at left:12px). */
+    left: 64px !important;
+    margin-left: 0 !important;
+    width: calc(100vw - 76px) !important;
+  }
+  .setting-icon-parrent {
+    position: absolute !important;
+    top: 64px !important;
+    left: 8px !important;
+    margin-left: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100vw - 16px);
+    height: auto;
+  }
+}
