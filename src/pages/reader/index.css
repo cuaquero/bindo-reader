@@ -7,7 +7,21 @@
 }
 .view-area {
   height: 100%;
-  touch-action: none;
+  /* Was "none" - this element is created by the closed-source reading
+     engine (kookit.min.js), and its custom tap/swipe page-turn handling
+     doesn't seem to respond reliably on a real touchscreen (isMobile was
+     hardcoded off for this fork's entire life until a since-reverted, also-
+     ineffective attempt to turn it on - see git history). "none" blocks the
+     browser's own native touch handling entirely, so if the engine's JS
+     isn't picking up the slack, nothing responds at all. pan-y restores
+     native vertical scrolling/panning as a fallback while still leaving
+     horizontal gestures to the engine's own (presumably swipe-based)
+     page-turn logic. If this doesn't help, the fallback buttons in
+     reader/component.tsx (.previous-chapter-single-container /
+     .next-chapter-single-container, calling rendition.prev()/next()
+     directly) are a separate, simpler code path worth testing to narrow
+     down whether this is engine-wide or specific to tap/swipe zones. */
+  touch-action: pan-y;
   position: relative;
 }
 
