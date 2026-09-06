@@ -4,6 +4,7 @@ import { getIframeDoc, getIframeWin } from "./docUtil";
 import {
   handleExitFullScreen,
   handleFullScreen,
+  isMobileRenderDevice,
   sleep,
   throttle,
 } from "../common";
@@ -424,7 +425,15 @@ export const bindHtmlEvent = (
     { passive: false }
   );
 
-  if (ConfigService.getReaderConfig("isTouch") === "yes") {
+  // isTouch is a manual, persisted Settings > Reading toggle - nothing
+  // auto-detects a real touch device here, so swipe-to-turn-page has never
+  // been wired up automatically on a phone. Fall back to real device
+  // detection so it works out of the box, while still respecting an
+  // explicit "yes" for e.g. a touchscreen laptop.
+  if (
+    ConfigService.getReaderConfig("isTouch") === "yes" ||
+    isMobileRenderDevice()
+  ) {
     const mc = new Hammer(doc);
     mc.on("panleft panright panup pandown", async (event: any) => {
       if (readerMode === "scroll") {
