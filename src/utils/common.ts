@@ -689,6 +689,15 @@ export const getPageWidth = (
 export const loadFontData = async () => {
   try {
     if (!window.queryLocalFonts) return [];
+    // Both callers (dropdownList/component.tsx, appearanceSetting/component.tsx)
+    // invoke this from componentDidMount, not a direct click - queryLocalFonts
+    // requires a currently-active user gesture and always throws
+    // SecurityError otherwise, so skip the doomed call instead of letting it
+    // fail every time. Functionally unchanged (it never returned real fonts
+    // under this calling pattern anyway), just without the console noise.
+    if (navigator.userActivation && !navigator.userActivation.isActive) {
+      return [];
+    }
     const availableFonts = await window.queryLocalFonts();
     return availableFonts.map((font: any) => {
       return {
