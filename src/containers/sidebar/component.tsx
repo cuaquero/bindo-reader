@@ -405,12 +405,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
             hidden (via CSS, mobile-only) while the drawer is open so the
             two don't visually stack. */}
         {!this.state.isMobileMenuOpen && (
-          <div
+          <button
+            type="button"
             className="mobile-menu-toggle"
+            aria-label="Open menu"
             onClick={this.handleMenuIconClick}
           >
             <span className="icon-menu sidebar-list"></span>
-          </div>
+          </button>
         )}
         {this.state.isMobileMenuOpen && (
           <div
