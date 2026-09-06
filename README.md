@@ -16,7 +16,7 @@
 
 ## What this is
 
-This is BTECH's internal fork of [Koodo Reader](https://github.com/koodo-reader/koodo-reader), an open-source ebook reader, customized for deployment as a web app at `books.itstem.org` and (eventually) embedded in Canvas via LTI. It's part of **Iterverse**, BTECH IT's umbrella platform alongside [Hub](https://github.com/cuaquero/iterverse_hub) (the shared roster/entitlement service Reader itself depends on), [Labs](https://github.com/cuaquero/iterverse_labs), [Simulations](https://github.com/cuaquero/iterverse_simulations), [CLI](https://github.com/cuaquero/iterverse_cli), and [HelpDesk](https://github.com/cuaquero/iterverse_helpdesk) - see the Labs repo's `design-system/` for the shared brand tokens and Iterverse mark used here.
+This is BTECH's internal fork of [Koodo Reader](https://github.com/koodo-reader/koodo-reader), an open-source ebook reader, customized for deployment as a web app at `books.itstem.org` and (eventually) embedded in Canvas via LTI. It's part of **Iterverse**, BTECH IT's umbrella platform alongside [Hub](https://github.com/cuaquero/iterverse_hub) (the shared roster/entitlement service Reader itself depends on), [Labs](https://github.com/cuaquero/iterverse_labs), [Simulations](https://github.com/cuaquero/iterverse_simulations), [CLI](https://github.com/cuaquero/iterverse_cli), [Packets](https://github.com/cuaquero/iterverse_packets), [Scripts](https://github.com/cuaquero/iterverse_scripts), and [HelpDesk](https://github.com/cuaquero/iterverse_helpdesk) - see the Labs repo's `design-system/` for the shared brand tokens and Iterverse mark used here.
 
 It is **not** the upstream open-source project — this fork has diverged in ways specific to BTECH's deployment:
 
