@@ -314,11 +314,27 @@
     width: 100%;
     height: auto;
     flex: 1;
+    /* .login-container's background is a per-step inline style (e.g.
+       var(--btech-gray)) applied to a box that's exactly one viewport tall;
+       if this column's own content ever needs more height than that (a very
+       short/landscape phone), the overflow scrolls into area painted with
+       body's own, slightly different default background instead - producing
+       a visible seam. Inherit whatever the parent is currently using so an
+       overflow still matches. */
+    background-color: inherit;
   }
   .login-cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .login-logo-img {
+    /* 100px (the desktop size) renders too small to read on a phone - the
+       image itself isn't cropped at that size (verified: scaling it up
+       reveals the full "BRIDGERLAND TECHNICAL COLLEGE" text), it's just
+       small enough that the tail end blurs into illegibility on a real
+       screen. */
+    width: 140px;
   }
   .login-title {
     margin-left: 20px !important;
