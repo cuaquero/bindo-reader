@@ -123,6 +123,27 @@ class Login extends React.Component<LoginProps, LoginState> {
     resetThirdpartyRequest();
   };
 
+  // The full horizontal wordmark (707x261) needs real width to stay legible
+  // - on the mobile stacked layout's ~140px-tall cover banner it either runs
+  // tiny or gets cropped by the banner's own overflow:hidden. Rendering both
+  // and letting login.css's mobile breakpoint swap which one is visible
+  // sidesteps that entirely: the square "b" mark reads fine at a size that
+  // actually fits.
+  renderLogo = () => (
+    <div className="login-logo">
+      <img
+        src={require("../../assets/images/btech/logo-horizontal.png")}
+        alt="logo"
+        className="login-logo-img"
+      />
+      <img
+        src={require("../../assets/images/btech/logo-mark.png")}
+        alt="logo"
+        className="login-logo-mark-img"
+      />
+    </div>
+  );
+
   render() {
     return (
       <>
@@ -159,13 +180,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                 backgroundColor: "var(--btech-gray-dark)",
               }}
             >
-              <div className="login-logo">
-                <img
-                  src={require("../../assets/images/btech/logo-horizontal.png")}
-                  alt="logo"
-                  className="login-logo-img"
-                />
-              </div>
+              {this.renderLogo()}
 
               <img
                 src={require("../../assets/images/background3.png")}
@@ -288,13 +303,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                 backgroundColor: "#e4e1d8",
               }}
             >
-              <div className="login-logo">
-                <img
-                  src={require("../../assets/images/btech/logo-horizontal.png")}
-                  alt="logo"
-                  className="login-logo-img"
-                />
-              </div>
+              {this.renderLogo()}
 
               <img
                 src={require("../../assets/images/background3.png")}
@@ -421,13 +430,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                 backgroundColor: "#e4e1d8",
               }}
             >
-              <div className="login-logo">
-                <img
-                  src={require("../../assets/images/btech/logo-horizontal.png")}
-                  alt="logo"
-                  className="login-logo-img"
-                />
-              </div>
+              {this.renderLogo()}
 
               <img
                 src={require("../../assets/images/background3.png")}
@@ -470,13 +473,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                 backgroundColor: "#e4e1d8",
               }}
             >
-              <div className="login-logo">
-                <img
-                  src={require("../../assets/images/btech/logo-horizontal.png")}
-                  alt="logo"
-                  className="login-logo-img"
-                />
-              </div>
+              {this.renderLogo()}
 
               <img
                 src={require("../../assets/images/background3.png")}
