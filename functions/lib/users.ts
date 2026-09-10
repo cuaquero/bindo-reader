@@ -1,7 +1,7 @@
 export interface OAuthIdentity {
   email: string;
   name: string | null;
-  provider: "google" | "microsoft" | "lti" | "access";
+  provider: "google" | "microsoft" | "access";
   sub: string;
 }
 
@@ -14,10 +14,10 @@ export interface UpsertedUser {
 // provider subject id rather than email alone where possible (emails can
 // theoretically be reassigned; the subject id can't).
 //
-// With LTI (and now Iterverse platform auth) in the mix, though, the same
-// person legitimately signs in through more than one provider (Canvas,
-// Cloudflare Access's OTP, Microsoft 365 once BTECH provisions student
-// accounts), and email is the only claim they all share -- so a second
+// With Iterverse platform auth in the mix, though, the same person
+// legitimately signs in through more than one provider (Cloudflare Access's
+// OTP, Microsoft 365 once BTECH provisions student accounts), and email is
+// the only claim they all share -- so a second
 // provider match falls back to linking the existing account by email
 // rather than colliding with the UNIQUE(email) constraint. This trades a
 // little of the reassigned-email safety above for one account per person

@@ -1,0 +1,13 @@
+-- Canvas LTI 1.3 integration was scaffolded (0004_lti_platforms) but never
+-- launched, and BTECH has decided it's unlikely to ever be needed: the
+-- shared Iterverse roster/entitlement system is the actual answer for auth
+-- across all Iterverse products, making a separate LTI integration
+-- redundant. Removing the dead table rather than carrying it as unused
+-- surface -- the LTI code itself (functions/api/lti/*, functions/lib/lti.ts,
+-- src/pages/ltiBridge, src/utils/storage/ltiSession.ts) was deleted in the
+-- same change; see git history if this decision ever gets revisited.
+--
+-- Like every other migration in this repo, this needs to be applied via the
+-- normal migration-apply process (see CLOUDFLARE.md's "Migrations" section):
+--   npx wrangler d1 migrations apply btech-books --remote
+DROP TABLE IF EXISTS lti_platforms;

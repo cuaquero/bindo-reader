@@ -210,12 +210,11 @@ class Login extends React.Component<LoginProps, LoginState> {
                   {/* Iterverse platform auth (Cloudflare Access, OTP) - see
                       platform-auth/README.md in the ad_labs repo. The only
                       login path actually wired to this app's own backend
-                      right now: LTI isn't happening, Google/Microsoft need
-                      BTECH student accounts provisioned first. A real <a>,
-                      not an onClick/fetch - this needs a top-level
-                      navigation for Access to intercept and run its OTP
-                      challenge before the request ever reaches
-                      /api/auth/access. */}
+                      right now: Google/Microsoft need BTECH student
+                      accounts provisioned first. A real <a>, not an
+                      onClick/fetch - this needs a top-level navigation for
+                      Access to intercept and run its OTP challenge before
+                      the request ever reaches /api/auth/access. */}
                   <a className="btech-signin-button" href="/api/auth/access">
                     <span className="icon-email"></span>
                     {this.props.t("Continue with your email")}
@@ -228,8 +227,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                       company's login system. Hidden, not deleted: this
                       comes back once Google/Microsoft OAuth apps are
                       registered and BTECH provisions student accounts for
-                      Microsoft to work against (see LTI.md's status notes
-                      on the same blocker). */}
+                      Microsoft to work against. */}
                   {false && (
                     <>
                       {loginList.map((item) => {

@@ -58,21 +58,11 @@ export async function createSession(
   return sessionId;
 }
 
-function readBearerToken(request: Request): string | null {
-  const header = request.headers.get("Authorization");
-  if (!header?.startsWith("Bearer ")) return null;
-  return header.slice("Bearer ".length);
-}
-
-// LTI sessions can't rely on the cookie (see functions/lib/lti.ts): the
-// reader is embedded in a Canvas iframe, so the client instead sends the
-// session id as a Bearer token. Every other route keeps working unchanged
-// since they only ever go through this one lookup.
 export async function getSessionUser(
   request: Request,
   env: Env
 ): Promise<SessionUser | null> {
-  const sessionId = readCookie(request, SESSION_COOKIE) ?? readBearerToken(request);
+  const sessionId = readCookie(request, SESSION_COOKIE);
   if (!sessionId) return null;
   const raw = await env.SESSIONS.get(`session:${sessionId}`);
   if (!raw) return null;

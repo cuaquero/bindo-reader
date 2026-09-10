@@ -16,23 +16,11 @@
 //
 // Auth: same-origin requests already carry the session cookie automatically
 // (Google/Microsoft/Access logins all set one - see functions/lib/session.ts).
-// The Authorization header below is only for the LTI case, where the session
-// id lives in localStorage instead of a cookie because Canvas embeds this
-// app in an iframe (see ltiSession.ts's own top comment) - attached whenever
-// present, alongside the cookie, per LTI.md's own note on what step 2 needs.
 import localforage from "localforage";
-import { getLtiSessionToken } from "./ltiSession";
-
-function authHeaders(): HeadersInit {
-  const token = getLtiSessionToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
 
 export async function fetchRemoteRecords(dbName: string): Promise<any[]> {
   try {
-    const response = await fetch(`/api/db/${encodeURIComponent(dbName)}`, {
-      headers: authHeaders(),
-    });
+    const response = await fetch(`/api/db/${encodeURIComponent(dbName)}`);
     if (response.status === 401) {
       return (await localforage.getItem(dbName)) || [];
     }
@@ -48,7 +36,7 @@ export async function saveRemoteRecords(dbName: string, records: any[]): Promise
   try {
     const response = await fetch(`/api/db/${encodeURIComponent(dbName)}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", ...authHeaders() },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(records),
     });
     if (response.status === 401) {
@@ -64,7 +52,6 @@ export async function deleteRemoteRecords(dbName: string): Promise<void> {
   try {
     const response = await fetch(`/api/db/${encodeURIComponent(dbName)}`, {
       method: "DELETE",
-      headers: authHeaders(),
     });
     if (response.status === 401) {
       await localforage.removeItem(dbName);

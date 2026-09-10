@@ -4,7 +4,6 @@ import Manager from "../pages/manager";
 import Login from "../pages/login";
 import Stats from "../pages/stats";
 import Admin from "../pages/admin";
-import LtiBridge from "../pages/ltiBridge";
 import HtmlReader from "../pages/reader";
 import _Redirect from "../pages/redirect";
 import NoAccess from "../pages/no-access";
@@ -153,7 +152,6 @@ const Router = () => {
         <Route component={NoAccess} path="/no-access" />
         <Route component={Stats} path="/stats" />
         <Route component={Admin} path="/admin" />
-        <Route component={LtiBridge} path="/lti/bridge" />
         <Route component={HtmlReader} path="/epub" />
         <Route component={HtmlReader} path="/mobi" />
         <Route component={HtmlReader} path="/cbr" />

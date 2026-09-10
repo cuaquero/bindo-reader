@@ -1,6 +1,6 @@
 // Shared by every login path that creates a Reader session (Access OTP,
-// Google, Microsoft, LTI) - extracted out of api/auth/access.ts so the
-// OAuth/LTI callbacks can't forget to call it. Reader's entitlement rule,
+// Google, Microsoft) - extracted out of api/auth/access.ts so the
+// OAuth callbacks can't forget to call it. Reader's entitlement rule,
 // per ad_labs/docs/unified-identity-v2-draft.md's resolution: implied by
 // any active enrollment in any course, anywhere - not a per-course grant.
 export async function checkRosterEntitlement(env: Env, email: string): Promise<boolean> {

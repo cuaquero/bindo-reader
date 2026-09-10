@@ -45,16 +45,15 @@ actually wired up to this backend). `/manager/*` and every other client route
 now goes through a real auth check; signing out or having no session redirects
 to `/login`.
 
-## Auth: three login paths, all gated on roster entitlement
+## Auth: two login paths, all gated on roster entitlement
 
-There are three ways to get a session, all converging on the same
+There are two ways to get a session, both converging on the same
 `users` table and the same session mechanism (`functions/lib/session.ts`):
 
 | Path | Status | Route |
 |---|---|---|
 | Cloudflare Access (OTP) | **Live — the real sign-in path today** | `functions/api/auth/access.ts` |
 | Google / Microsoft OAuth | Built, roster-gated, hidden client-side | `functions/api/auth/google*`, `microsoft*` |
-| Canvas LTI 1.3 | Scaffolded, deprioritized indefinitely (BTECH's call) | `functions/api/lti/*` — see [LTI.md](./LTI.md) |
 
 ### Live path: Cloudflare Access (One-Time PIN)
 
@@ -81,9 +80,9 @@ implies Reader access, not a per-course grant. `functions/lib/roster.ts`'s
 `${ROSTER_API_URL}/api/entitlement/check` with a bearer `ROSTER_SERVICE_KEY`
 (a secret shared with the roster service's own `SERVICE_KEY`); a non-`entitled`
 response redirects to `/#/no-access` (`src/pages/no-access/`) instead of
-creating a session. All four login callbacks (Access, Google, Microsoft, LTI)
+creating a session. All three login callbacks (Access, Google, Microsoft)
 call this — it was originally only on the Access path and got backfilled onto
-the other three in a security-audit pass so a future OAuth/LTI rollout
+the other two in a security-audit pass so a future OAuth rollout
 couldn't silently skip it.
 
 **Operationally, this means the roster service's data is now a hard
@@ -293,9 +292,10 @@ npx wrangler d1 migrations list btech-books --remote   # what's applied
 ```
 
 Applied so far: `0001_init_schema` (users, kv_store), `0002_add_user_role`
-(users.role), `0003_books_catalog` (books). `0004_lti_platforms` exists in
-the repo but is **not yet applied** — it's part of the LTI onboarding
-sequence in [LTI.md](./LTI.md), on hold along with the rest of that work.
+(users.role), `0003_books_catalog` (books). `0004_lti_platforms` was never
+applied — it was part of the Canvas LTI integration, which has since been
+removed entirely (see "What's NOT done yet" below); `0005_drop_lti_platforms`
+drops that table for anyone who does apply the full migration history.
 
 ## Deployment
 
@@ -332,12 +332,10 @@ npx wrangler pages deploy ./build --project-name=iterverse-reader --branch=dev
   purely waiting on BTECH provisioning real student Google/Microsoft
   accounts, then setting the secrets above and un-hiding the client-side
   buttons. No further code work expected.
-- **Canvas LTI 1.3** — backend routes and D1 schema are scaffolded
-  (`functions/api/lti/*`, `functions/lib/lti.ts`), migration not yet applied,
-  registration with a real Canvas instance hasn't happened. BTECH has called
-  this deprioritized indefinitely ("unlikely to happen") in favor of the
-  Access/roster model above — treat [LTI.md](./LTI.md) as historical design
-  reference, not an active near-term task, unless that changes.
+- **Canvas LTI 1.3** — was scaffolded early on but has been removed entirely.
+  BTECH called it unlikely to ever be needed given the Access/roster model
+  above, which already covers auth across all Iterverse products; it's
+  recoverable from git history if that decision changes.
 - **Roster data completeness** — this is the live path's actual dependency
   now (see "roster entitlement" above), and it lives in a different
   repo/service (`iterverse_hub`, part of `ad_labs`). If sign-ins are failing
