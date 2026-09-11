@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "btech-books",
+  "name": "iterverse-reader",
   "pages_build_output_dir": "./build",
   "compatibility_date": "2026-08-17",
   "compatibility_flags": ["nodejs_compat"],
